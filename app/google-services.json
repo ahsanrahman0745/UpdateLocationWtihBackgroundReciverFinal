@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "673921653456",
+    "project_id": "getlocationinbackgroud",
+    "storage_bucket": "getlocationinbackgroud.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673921653456:android:3083b44fccbb585d5e9cd5",
+        "android_client_info": {
+          "package_name": "com.atomsindia.local"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "673921653456-c11c2c6r3e2j5bnqks94ba9d8o14eded.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnVdBcBTchkcPBA2S5Q0mA0Xk6u1_fG7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "673921653456-c11c2c6r3e2j5bnqks94ba9d8o14eded.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673921653456:android:9818b591c656deb95e9cd5",
+        "android_client_info": {
+          "package_name": "dev.devcrew.updatelocationwtihbackgroundreciver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "673921653456-c11c2c6r3e2j5bnqks94ba9d8o14eded.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnVdBcBTchkcPBA2S5Q0mA0Xk6u1_fG7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "673921653456-c11c2c6r3e2j5bnqks94ba9d8o14eded.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
