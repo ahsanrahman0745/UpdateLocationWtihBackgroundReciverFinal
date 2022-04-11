@@ -131,7 +131,7 @@ public class LocationUpdatesService extends Service {
      * Realtime location save in firestore or firebase*/
     GeoFire geoFire;
     FirebaseFirestore firebaseFirestore;
-    DocumentReference documentReference;
+    DocumentReference documentReference2;
     FirebaseAuth firebaseAuth;
 
     @SuppressWarnings("deprecation")
@@ -240,7 +240,7 @@ public class LocationUpdatesService extends Service {
         // Called when the last client (MainActivity in case of this sample) unbinds from this
         // service. If this method is called due to a configuration change in MainActivity, we
         // do nothing. Otherwise, we make this service a foreground service.
-        if (!mChangingConfiguration && Utils.requestingLocationUpdates(this)) {
+        if (!mChangingConfiguration && UtilsShareP.requestingLocationUpdates(this)) {
             Log.d(TAG, "Starting foreground service");
             /*
             // TODO(developer). If targeting O, use the following code.
@@ -264,7 +264,8 @@ public class LocationUpdatesService extends Service {
     @SuppressWarnings("deprecation")
     @Override
     public void onDestroy() {
-        mServiceHandler.removeCallbacksAndMessages(null);
+
+       // mServiceHandler.removeCallbacksAndMessages(null);
     }
 
     /**
@@ -273,13 +274,13 @@ public class LocationUpdatesService extends Service {
      */
     public void requestLocationUpdates() {
         Log.i(TAG, "Requesting location updates");
-        Utils.setRequestingLocationUpdates(this, true);
+        UtilsShareP.setRequestingLocationUpdates(this, true);
         startService(new Intent(getApplicationContext(), LocationUpdatesService.class));
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                     mLocationCallback, Looper.myLooper());
         } catch (SecurityException unlikely) {
-            Utils.setRequestingLocationUpdates(this, false);
+            UtilsShareP.setRequestingLocationUpdates(this, false);
             Log.d(TAG, "Lost location permission. Could not request updates. " + unlikely);
         }
     }
@@ -292,10 +293,10 @@ public class LocationUpdatesService extends Service {
         Log.i(TAG, "Removing location updates");
         try {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-            Utils.setRequestingLocationUpdates(this, false);
+            UtilsShareP.setRequestingLocationUpdates(this, false);
             stopSelf();
         } catch (SecurityException unlikely) {
-            Utils.setRequestingLocationUpdates(this, true);
+            UtilsShareP.setRequestingLocationUpdates(this, true);
             Log.d(TAG, "Lost location permission. Could not remove updates. " + unlikely);
         }
     }
@@ -306,7 +307,7 @@ public class LocationUpdatesService extends Service {
     private Notification getNotification() {
         Intent intent = new Intent(this, LocationUpdatesService.class);
 
-        CharSequence text = Utils.getLocationText(mLocation);
+        CharSequence text = UtilsShareP.getLocationText(mLocation);
 
         // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
         intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true);
@@ -325,7 +326,7 @@ public class LocationUpdatesService extends Service {
                 .addAction(R.drawable.ic_cancel, getString(R.string.remove_location_updates),
                         servicePendingIntent)
                 .setContentText(text)
-                .setContentTitle(Utils.getLocationTitle(this))
+                .setContentTitle(UtilsShareP.getLocationTitle(this))
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -439,12 +440,12 @@ public class LocationUpdatesService extends Service {
         driverMap.put("name" , String.valueOf(latitude));
         driverMap.put("email" , String.valueOf(longitude));
 
-        documentReference = firebaseFirestore
+        documentReference2 = firebaseFirestore
                 .collection("driverAvaliable")
                 .document("newdriver2");
       // documentReference.set(driverMap);
 
-        documentReference.update("latitude", String.valueOf(latitude),
+        documentReference2.update("latitude", String.valueOf(latitude),
                                     "longitude", String.valueOf(longitude),
                                     "timeStamp", FieldValue.serverTimestamp())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -42,8 +42,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocationUpdatesService.LocalBinder binder = (LocationUpdatesService.LocalBinder) service;
             mService = binder.getService();
+            Log.d(TAG, "onServiceConnected: "+mService);
             mBound = true;
         }
 
@@ -92,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements
         firebaseAuth = FirebaseAuth.getInstance();
 
         // Check that the user hasn't revoked permissions by going to Settings.
-        if (Utils.requestingLocationUpdates(this)) {
+        if (UtilsShareP.requestingLocationUpdates(this)) {
             if (!checkPermissions()) {
                 requestPermissions();
             }
@@ -127,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         // Restore the state of the buttons when the activity (re)launches.
-        setButtonsState(Utils.requestingLocationUpdates(this));
+        setButtonsState(UtilsShareP.requestingLocationUpdates(this));
 
         // Bind to the service. If the service is in foreground mode, this signals to the service
         // that since this activity is in the foreground, the service can exit foreground mode.
@@ -254,17 +262,47 @@ public class MainActivity extends AppCompatActivity implements
         public void onReceive(Context context, Intent intent) {
             Location location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
             if (location != null) {
-                Toast.makeText(MainActivity.this, Utils.getLocationText(location),
+                SavetoServer(location);
+                Toast.makeText(MainActivity.this, "recived: "+UtilsShareP.getLocationText(location),
                         Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    private void SavetoServer(Location location) {
+ //       Toast.makeText(this, "Save to server", Toast.LENGTH_SHORT).show();
+        Log.d("resMM", "Send to server");
+        Log.d("resML", String.valueOf(location.getLatitude()));
+        Log.d("resMLL", String.valueOf(location.getLongitude()));
+
+        Map<String , String> driverMap = new HashMap<>();
+
+        driverMap.put("name" , String.valueOf(location.getLongitude()));
+        driverMap.put("email" , String.valueOf(location.getLatitude()));
+
+    FirebaseFirestore.getInstance()
+                .collection("driverAvaliable")
+                .document("newdriver2").update("latitude", String.valueOf(location.getLatitude()),
+                "longitude", String.valueOf(location.getLongitude()),
+                "timeStamp", FieldValue.serverTimestamp())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "Error updating document", e);
+            }
+        });
+    }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         // Update the buttons state depending on whether location updates are being requested.
-        if (s.equals(Utils.KEY_REQUESTING_LOCATION_UPDATES)) {
-            setButtonsState(sharedPreferences.getBoolean(Utils.KEY_REQUESTING_LOCATION_UPDATES,
+        if (s.equals(UtilsShareP.KEY_REQUESTING_LOCATION_UPDATES)) {
+            setButtonsState(sharedPreferences.getBoolean(UtilsShareP.KEY_REQUESTING_LOCATION_UPDATES,
                     false));
         }
     }
